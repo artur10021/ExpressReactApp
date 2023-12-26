@@ -1,7 +1,5 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
-// import { employees } from "./db.js";
-// import type { Employee } from "./types";
 import { TRPCError } from "@trpc/server";
 import { PrismaClient } from "@prisma/client";
 

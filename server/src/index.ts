@@ -9,18 +9,16 @@ const app = express();
 app.use(cors());
 
 app.use(
-  // суффикс пути
-  // получаем http://localhost:4000/trpc
-  "/trpc",
-  trpcExpress.createExpressMiddleware({
-    router: appRouter,
-    createContext,
-  })
+    //http://localhost:4000/trpc
+    "/trpc",
+    trpcExpress.createExpressMiddleware({
+        router: appRouter,
+        createContext,
+    })
 );
 
-// адрес сервера: http://localhost:4000
 app.listen(4000, () => {
-  console.log("Server running on port 4000");
+    console.log("Server running on port 4000");
 });
 
 export type AppRouter = typeof appRouter;
