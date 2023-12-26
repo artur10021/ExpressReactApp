@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Department" ALTER COLUMN "dateOfCreation" DROP NOT NULL,
+ALTER COLUMN "dateOfCreation" SET DEFAULT CURRENT_TIMESTAMP;
