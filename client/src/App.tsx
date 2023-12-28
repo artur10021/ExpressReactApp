@@ -34,28 +34,10 @@ function App() {
 
     return (
         <div className="App">
-            {/* <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/departments/*" element={<DepartmentsPage />}>
-                        <Route
-                            path="departmentDitails"
-                            element={<DepartmentsDitails />}
-                        />
-                    </Route>
-                    <Route path="/employees/*" element={<EmployeesPage />} />
-                    <Route path="employeeName" element={<EmployeeDitails />} />
-                </Routes>
-            </BrowserRouter> */}
-
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/departments" element={<DepartmentsPage />} />
-                    {/* <Route
-                        path="/departmentDitails"
-                        element={<DepartmentsDitails departmentId={0} />}
-                    /> */}
                     <Route path="/employees" element={<EmployeesPage />} />
                     <Route path="employeeName" element={<EmployeeDitails />} />
                 </Routes>
