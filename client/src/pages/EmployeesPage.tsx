@@ -8,7 +8,6 @@ const EmployeesPage: React.FC = () => {
         <div>
             <Header />
             <EmployeesList />
-            <Outlet />
         </div>
     );
 };

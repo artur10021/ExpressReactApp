@@ -8,8 +8,34 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const employeeRouter = router({
-    getEmployee: publicProcedure.query(async () => {
+    getEmployees: publicProcedure.query(async () => {
         const employees = await prisma.employee.findMany();
+        return employees;
+    }),
+
+    getEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
+        const employee = await prisma.employee.findUnique({
+            where: { id: opt.input },
+        });
+        return employee;
+    }),
+
+    getEmployeesByDepartment: publicProcedure
+        .input(z.number())
+        .query(async (opt) => {
+            const employees = await prisma.employee.findMany({
+                where: { departmentsId: opt.input },
+            });
+            return employees;
+        }),
+
+    getFiveLastAddedEmployees: publicProcedure.query(async () => {
+        const employees = await prisma.employee.findMany({
+            take: 5,
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
         return employees;
     }),
 
@@ -24,27 +50,29 @@ const employeeRouter = router({
             })
         )
         .query(async (opts) => {
-            const employee = await prisma.employee.create({
-                data: {
-                    email: opts.input.email,
-                    fullName: opts.input.fullName,
-                    departmentsId: opts.input.departmentsId,
-                    jobTitle: opts.input.jobTitle,
-                    isHead: opts.input.isHead,
-                },
-            });
+            try {
+                const employee = await prisma.employee.create({
+                    data: {
+                        email: opts.input.email,
+                        fullName: opts.input.fullName,
+                        departmentsId: opts.input.departmentsId,
+                        jobTitle: opts.input.jobTitle,
+                        isHead: opts.input.isHead,
+                    },
+                });
 
-            await prisma.department.update({
-                where: { id: opts.input.departmentsId },
-                data: {
-                    employees: {
-                        connect: {
-                            id: employee.id,
+                await prisma.department.update({
+                    where: { id: opts.input.departmentsId },
+                    data: {
+                        employeesCount: {
+                            increment: 2,
                         },
                     },
-                },
-            });
-            return employee;
+                });
+                return employee;
+            } catch (e) {
+                throw e;
+            }
         }),
 });
 

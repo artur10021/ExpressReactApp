@@ -11,20 +11,23 @@ datasource db {
 }
 
 model Employee {
-  id            Int        @id @default(autoincrement())
-  email         String     @unique
-  fullName      String?  
-  department    Department @relation(fields: [departmentsId], references: [id])
-  departmentsId Int
-  jobTitle      String
-  isHead        Boolean    @default(false)
+  id                Int             @id @default(autoincrement())
+  email             String          @unique
+  fullName          String?  
+  department        Department      @relation(fields: [departmentsId], references: [id])
+  createdAt         DateTime        @default(now() ) @db.Timestamp(4)
+  updatedAt         DateTime        @updatedAt @default(now()) @db.Timestamp(4)
+  departmentsId     Int
+  jobTitle          String
+  isHead            Boolean         @default(false)
 }
 
 model Department{
-  id              Int             @id @default(autoincrement())
-  name            String          @unique 
-  employeesCount  Int
-  dateOfCreation  DateTime?       @default(now())
-  description     String?
-  employees       Employee[]
+  id                Int             @id @default(autoincrement())
+  name              String          @unique 
+  employeesCount    Int
+  createdAt         DateTime        @default(now()) @db.Timestamp(4)
+  updatedAt         DateTime        @updatedAt @default(now()) @db.Timestamp(4)
+  description       String?
+  employees         Employee[]
 }

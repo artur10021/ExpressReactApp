@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
-import { TRPCError } from "@trpc/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -10,6 +9,24 @@ const departmentRouter = router({
         const departments = await prisma.department.findMany();
         return departments;
     }),
+
+    getDepartmentById: publicProcedure.input(z.number()).query(async (opt) => {
+        const department = await prisma.department.findUnique({
+            where: { id: opt.input },
+        });
+        return department;
+    }),
+
+    getTopFiveDepartmentsByEmployeesCount: publicProcedure.query(async () => {
+        const departments = await prisma.department.findMany({
+            take: 5,
+            orderBy: {
+                employeesCount: "desc",
+            },
+        });
+        return departments;
+    }),
+
     createDepartment: publicProcedure
         .input(
             z.object({
