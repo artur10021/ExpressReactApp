@@ -13,7 +13,12 @@ const EmployeesList: React.FC = () => {
         });
     }, []);
 
-    return <div>{<EmployeeTable state={employees} />}</div>;
+    return (
+        <div>
+            <h1>Employees List:</h1>
+            <EmployeeTable state={employees} isAddEmployeeByttonHiden={false} />
+        </div>
+    );
 };
 
 export default EmployeesList;

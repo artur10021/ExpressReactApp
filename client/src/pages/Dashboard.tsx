@@ -26,13 +26,16 @@ const Dashboard: React.FC = () => {
     return (
         <div>
             <Header />
-            <h1>Dashboard</h1>
+            <h1>Dashboard:</h1>
             <div>
                 <strong>Top 5 departments by number of employees</strong>
                 <DepartmentTable />
                 <br />
                 <strong>5 most recently added employees;</strong>
-                <EmployeeTable state={topEmployees} />
+                <EmployeeTable
+                    state={topEmployees}
+                    isAddEmployeeByttonHiden={true}
+                />
             </div>
         </div>
     );

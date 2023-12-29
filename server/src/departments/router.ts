@@ -31,7 +31,6 @@ const departmentRouter = router({
         .input(
             z.object({
                 name: z.string(),
-                employeesCount: z.number(),
                 description: z.string().optional(),
             })
         )
@@ -39,7 +38,6 @@ const departmentRouter = router({
             const department = await prisma.department.create({
                 data: {
                     name: opts.input.name,
-                    employeesCount: opts.input.employeesCount,
                     description: opts.input.description,
                 },
             });

@@ -25,7 +25,7 @@ model Employee {
 model Department{
   id                Int             @id @default(autoincrement())
   name              String          @unique 
-  employeesCount    Int
+  employeesCount    Int             @default(0)
   createdAt         DateTime        @default(now()) @db.Timestamp(4)
   updatedAt         DateTime        @updatedAt @default(now()) @db.Timestamp(4)
   description       String?

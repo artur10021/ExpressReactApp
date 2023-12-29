@@ -5,9 +5,12 @@ import { EmployeeI } from "../types/EmployeeI";
 import { DepartmentI } from "../types/DepartmentI";
 import DepartmentTable from "./DepartmentTable";
 import style from "./styles/DitailsWrapper.module.scss";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 
-const DepartmentsDitails: React.FC<{ departmentId: number }> = (props) => {
+const DepartmentsDitails: React.FC<{
+    departmentId: number;
+    hideDitails: () => void;
+}> = (props) => {
     const [employees, setEployees] = useState<EmployeeI[]>([]);
     const [department, setDepartment] = useState<DepartmentI | null>(null);
 
@@ -27,7 +30,6 @@ const DepartmentsDitails: React.FC<{ departmentId: number }> = (props) => {
     return (
         <div>
             <h1>Department ditails:</h1>
-
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -50,9 +52,13 @@ const DepartmentsDitails: React.FC<{ departmentId: number }> = (props) => {
                     </tr>
                 </tbody>
             </Table>
-
             <h2>Employees list:</h2>
-            <EmployeeTable state={employees} />
+            <EmployeeTable state={employees} isAddEmployeeByttonHiden={true} />
+            <br />
+            <Button variant="warning" onClick={props.hideDitails}>
+                Return to all departments
+            </Button>{" "}
+            <br />
         </div>
     );
 };
