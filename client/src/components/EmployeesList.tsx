@@ -6,17 +6,22 @@ import EmployeeTable from "./EmployeeTable";
 
 const EmployeesList: React.FC = () => {
     const [employees, setEployees] = useState<EmployeeI[]>([]);
+    const [refreshPage, setRefreshPage] = useState(false);
 
     useEffect(() => {
         trpc.employee.getEmployees.query().then((obj: EmployeeI[]) => {
             setEployees(obj);
         });
-    }, [employees]);
+    }, [refreshPage]);
 
     return (
         <div>
             <h1>Employees List:</h1>
-            <EmployeeTable state={employees} isAddEmployeeByttonHiden={false} />
+            <EmployeeTable
+                state={employees}
+                isAddEmployeeByttonHiden={false}
+                setRefreshPage={setRefreshPage}
+            />
         </div>
     );
 };

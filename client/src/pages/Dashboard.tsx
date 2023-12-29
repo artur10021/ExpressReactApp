@@ -9,6 +9,7 @@ import EmployeeTable from "../components/EmployeeTable";
 const Dashboard: React.FC = () => {
     const [topDepartments, setTopDepartments] = useState<DepartmentI[]>([]);
     const [topEmployees, setTopEployees] = useState<EmployeeI[]>([]);
+    const [refreshPage, setRefreshPage] = useState(false);
 
     useEffect(() => {
         trpc.department.getTopFiveDepartmentsByEmployeesCount
@@ -22,7 +23,7 @@ const Dashboard: React.FC = () => {
             .then((emplArr: EmployeeI[]) => {
                 setTopEployees(emplArr);
             });
-    }, []);
+    }, [refreshPage]);
     return (
         <div>
             <Header />
@@ -35,6 +36,7 @@ const Dashboard: React.FC = () => {
                 <EmployeeTable
                     state={topEmployees}
                     isAddEmployeeByttonHiden={true}
+                    setRefreshPage={setRefreshPage}
                 />
             </div>
         </div>

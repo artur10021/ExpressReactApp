@@ -10,6 +10,7 @@ import { Button, Table } from "react-bootstrap";
 const DepartmentsDitails: React.FC<{
     departmentId: number;
     hideDitails: () => void;
+    setrefreshPage: (value: boolean) => void;
 }> = (props) => {
     const [employees, setEployees] = useState<EmployeeI[]>([]);
     const [department, setDepartment] = useState<DepartmentI | null>(null);
@@ -53,7 +54,11 @@ const DepartmentsDitails: React.FC<{
                 </tbody>
             </Table>
             <h2>Employees list:</h2>
-            <EmployeeTable state={employees} isAddEmployeeByttonHiden={true} />
+            <EmployeeTable
+                state={employees}
+                isAddEmployeeByttonHiden={true}
+                setRefreshPage={props.setrefreshPage}
+            />
             <br />
             <Button variant="warning" onClick={props.hideDitails}>
                 Return to all departments

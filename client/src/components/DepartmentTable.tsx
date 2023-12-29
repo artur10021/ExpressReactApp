@@ -12,16 +12,33 @@ const DepartmentTable: React.FC = () => {
     const [idOfDepartmentDitails, setIdOfDepartmentDitails] =
         useState<number>(0);
 
+    const [showModal, setShowModal] = useState(false);
+    const [isHidden, setIsHidden] = useState(false);
+    const [nameInput, setNameInput] = useState("");
+    const [descriptionInput, setDescriptionInput] = useState("");
+
     const [departments, setDepartments] = useState<DepartmentI[]>([]);
+    const [refreshPage, setrefreshPage] = useState<boolean>(false);
 
     useEffect(() => {
         trpc.department.getDepartments.query().then((depArr) => {
             setDepartments(depArr);
         });
-    }, [departments]);
+    }, [refreshPage, showModal]);
+
+    const createDepartment = () => {
+        setDescriptionInput("");
+        setNameInput("");
+        setrefreshPage(true);
+        trpc.department.createDepartment.query({
+            name: nameInput,
+            description: descriptionInput,
+        });
+    };
 
     const removeDepartment = async (id: number) => {
         await trpc.department.removeDepatrmentById.query(id);
+        setrefreshPage(!refreshPage);
     };
 
     const hideDitails = () => {
@@ -37,6 +54,7 @@ const DepartmentTable: React.FC = () => {
         <DepartmentsDitails
             departmentId={idOfDepartmentDitails}
             hideDitails={hideDitails}
+            setrefreshPage={setrefreshPage}
         />
     ) : (
         <>
@@ -75,6 +93,69 @@ const DepartmentTable: React.FC = () => {
                     ))}
                 </tbody>
             </Table>
+            <Button
+                hidden={isHidden}
+                variant="info"
+                onClick={() => {
+                    setShowModal(true);
+                }}
+            >
+                Add new department
+            </Button>{" "}
+            <Modal
+                show={showModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Department Adding
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <p>Department name:</p>
+                        <input
+                            placeholder="name"
+                            value={nameInput}
+                            onChange={(e) => {
+                                setNameInput(e.currentTarget.value);
+                            }}
+                        />
+                    </div>
+                    <br />
+                    <div>
+                        <p>Department description:</p>
+
+                        <input
+                            placeholder="description"
+                            value={descriptionInput}
+                            onChange={(e) => {
+                                setDescriptionInput(e.currentTarget.value);
+                            }}
+                        />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="success"
+                        onClick={() => {
+                            createDepartment();
+                            setrefreshPage(true);
+                        }}
+                    >
+                        Create department
+                    </Button>{" "}
+                    <Button
+                        onClick={() => {
+                            setShowModal(false);
+                        }}
+                    >
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };

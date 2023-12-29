@@ -9,7 +9,8 @@ import { DepartmentI } from "../types/DepartmentI";
 const EmployeeTable: React.FC<{
     state: EmployeeI[];
     isAddEmployeeByttonHiden: boolean;
-}> = ({ state, isAddEmployeeByttonHiden }) => {
+    setRefreshPage: (value: boolean) => void;
+}> = ({ state, isAddEmployeeByttonHiden, setRefreshPage }) => {
     const [showModal, setShowModal] = useState(false);
 
     const [nameInput, setNameInput] = useState("");
@@ -18,8 +19,6 @@ const EmployeeTable: React.FC<{
     const [jobTitleInput, setJobTitleInput] = useState("");
     const [isHeadInput, setIsHeadInput] = useState(false);
 
-    const [refreshPage, setRefreshPage] = useState(false);
-
     const [departments, setDepartments] = useState<DepartmentI[]>([]);
     const [departmentChoise, setDepartmentChoise] = useState("Depatrments:");
 
@@ -27,7 +26,7 @@ const EmployeeTable: React.FC<{
         trpc.department.getDepartments.query().then((arr: DepartmentI[]) => {
             setDepartments(arr);
         });
-    }, [departments, refreshPage]);
+    }, []);
 
     const removeEmployee = async (id: number) => {
         await trpc.employee.removeEmployeeById.query(id);
@@ -195,6 +194,7 @@ const EmployeeTable: React.FC<{
                     <Button
                         onClick={() => {
                             setShowModal(false);
+                            setRefreshPage(true);
                         }}
                     >
                         Close
