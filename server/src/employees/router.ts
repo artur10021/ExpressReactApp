@@ -4,46 +4,76 @@ import { router, publicProcedure } from "../trpc.js";
 import type { Employee } from "./types";
 import { TRPCError } from "@trpc/server";
 import { PrismaClient } from "@prisma/client";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library.js";
 
 const prisma = new PrismaClient();
 
 const employeeRouter = router({
     getEmployees: publicProcedure.query(async () => {
-        const employees = await prisma.employee.findMany();
-        return employees;
+        try {
+            const employees = await prisma.employee.findMany();
+            return employees;
+        } catch (e) {
+            console.error(e, 500);
+        }
     }),
 
     getEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
-        const employee = await prisma.employee.findUnique({
-            where: { id: opt.input },
-        });
-        return employee;
+        try {
+            const employee = await prisma.employee.findUnique({
+                where: { id: opt.input },
+            });
+            return employee;
+        } catch (e) {
+            console.error(e, 500);
+        }
     }),
 
     getEmployeesByDepartment: publicProcedure
         .input(z.number())
         .query(async (opt) => {
-            const employees = await prisma.employee.findMany({
-                where: { departmentsId: opt.input },
-            });
-            return employees;
+            try {
+                const employees = await prisma.employee.findMany({
+                    where: { departmentsId: opt.input },
+                });
+                return employees;
+            } catch (e) {
+                console.error(e, 500);
+            }
         }),
 
     getFiveLastAddedEmployees: publicProcedure.query(async () => {
-        const employees = await prisma.employee.findMany({
-            take: 5,
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
-        return employees;
+        try {
+            const employees = await prisma.employee.findMany({
+                take: 5,
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
+            return employees;
+        } catch (e) {
+            console.error(e, 500);
+        }
     }),
 
     removeEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
-        const employees = await prisma.employee.delete({
-            where: { id: opt.input },
-        });
-        return employees;
+        try {
+            const employees = await prisma.employee.delete({
+                where: { id: opt.input },
+            });
+
+            await prisma.department.update({
+                where: { id: employees.departmentsId },
+                data: {
+                    employeesCount: {
+                        increment: -1,
+                    },
+                },
+            });
+            return employees;
+        } catch (e) {
+            console.error(e, 500);
+        }
     }),
 
     createEmployee: publicProcedure
@@ -58,6 +88,16 @@ const employeeRouter = router({
         )
         .query(async (opts) => {
             try {
+                if (
+                    !opts.input.email ||
+                    opts.input.jobTitle ||
+                    opts.input.fullName
+                ) {
+                    throw Error(
+                        "email/jobTitle/fullName fields can not be empty"
+                    );
+                }
+
                 const employee = await prisma.employee.create({
                     data: {
                         email: opts.input.email,
@@ -72,13 +112,13 @@ const employeeRouter = router({
                     where: { id: opts.input.departmentsId },
                     data: {
                         employeesCount: {
-                            increment: 2,
+                            increment: 1,
                         },
                     },
                 });
                 return employee;
             } catch (e) {
-                throw e;
+                console.error(e, 400);
             }
         }),
 });
