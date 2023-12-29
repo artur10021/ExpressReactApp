@@ -76,26 +76,28 @@ const employeeRouter = router({
             }
         }),
 
-    removeEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
-        try {
-            const employees = await prisma.employee.delete({
-                where: { id: opt.input },
-            });
+    removeEmployeeById: publicProcedure
+        .input(z.number())
+        .mutation(async (opt) => {
+            try {
+                const employees = await prisma.employee.delete({
+                    where: { id: opt.input },
+                });
 
-            await prisma.department.update({
-                where: { id: employees.departmentsId },
-                data: {
-                    employeesCount: {
-                        increment: -1,
+                await prisma.department.update({
+                    where: { id: employees.departmentsId },
+                    data: {
+                        employeesCount: {
+                            increment: -1,
+                        },
                     },
-                },
-            });
-            return employees;
-        } catch (e: any) {
-            console.error(e, 500);
-            throw new Error(e);
-        }
-    }),
+                });
+                return employees;
+            } catch (e: any) {
+                console.error(e, 500);
+                throw new Error(e);
+            }
+        }),
 
     createEmployee: publicProcedure
         .input(
@@ -107,12 +109,12 @@ const employeeRouter = router({
                 isHead: z.boolean(),
             })
         )
-        .query(async (opts) => {
+        .mutation(async (opts) => {
             try {
                 if (
                     !opts.input.email ||
-                    opts.input.jobTitle ||
-                    opts.input.fullName
+                    !opts.input.jobTitle ||
+                    !opts.input.fullName
                 ) {
                     throw Error(
                         "email/jobTitle/fullName fields can not be empty"

@@ -49,7 +49,7 @@ const departmentRouter = router({
                 description: z.string().optional(),
             })
         )
-        .query(async (opts) => {
+        .mutation(async (opts) => {
             try {
                 if (!opts.input.name || !opts.input.description) {
                     throw new Error(
@@ -71,7 +71,7 @@ const departmentRouter = router({
 
     removeDepatrmentById: publicProcedure
         .input(z.number())
-        .query(async (opt) => {
+        .mutation(async (opt) => {
             try {
                 const department = await prisma.department.delete({
                     where: { id: opt.input },

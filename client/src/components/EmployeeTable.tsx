@@ -29,7 +29,7 @@ const EmployeeTable: React.FC<{
     }, []);
 
     const removeEmployee = async (id: number) => {
-        await trpc.employee.removeEmployeeById.query(id);
+        await trpc.employee.removeEmployeeById.mutate(id);
     };
 
     const addEmployee = async () => {
@@ -39,7 +39,7 @@ const EmployeeTable: React.FC<{
         setJobTitleInput("");
         setIsHeadInput(false);
 
-        await trpc.employee.createEmployee.query({
+        await trpc.employee.createEmployee.mutate({
             email: emailInput,
             fullName: nameInput,
             departmentsId: departmentIdInput,

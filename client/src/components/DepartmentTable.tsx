@@ -31,14 +31,14 @@ const DepartmentTable: React.FC<{ isAddDepartmentButtonHidden: boolean }> = ({
         setDescriptionInput("");
         setNameInput("");
         setrefreshPage(true);
-        trpc.department.createDepartment.query({
+        trpc.department.createDepartment.mutate({
             name: nameInput,
             description: descriptionInput,
         });
     };
 
     const removeDepartment = async (id: number) => {
-        await trpc.department.removeDepatrmentById.query(id);
+        await trpc.department.removeDepatrmentById.mutate(id);
         setrefreshPage(!refreshPage);
     };
 
