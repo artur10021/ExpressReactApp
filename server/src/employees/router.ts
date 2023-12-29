@@ -13,8 +13,9 @@ const employeeRouter = router({
         try {
             const employees = await prisma.employee.findMany();
             return employees;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -24,8 +25,9 @@ const employeeRouter = router({
                 where: { id: opt.input },
             });
             return employee;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -37,8 +39,9 @@ const employeeRouter = router({
                     where: { departmentsId: opt.input },
                 });
                 return employees;
-            } catch (e) {
+            } catch (e: any) {
                 console.error(e, 500);
+                throw new Error(e);
             }
         }),
 
@@ -51,8 +54,9 @@ const employeeRouter = router({
                 },
             });
             return employees;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -71,8 +75,9 @@ const employeeRouter = router({
                 },
             });
             return employees;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -117,8 +122,9 @@ const employeeRouter = router({
                     },
                 });
                 return employee;
-            } catch (e) {
+            } catch (e: any) {
                 console.error(e, 400);
+                throw new Error(e);
             }
         }),
 });

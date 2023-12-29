@@ -9,8 +9,9 @@ const departmentRouter = router({
         try {
             const departments = await prisma.department.findMany();
             return departments;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -20,8 +21,9 @@ const departmentRouter = router({
                 where: { id: opt.input },
             });
             return department;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -34,8 +36,9 @@ const departmentRouter = router({
                 },
             });
             return departments;
-        } catch (e) {
+        } catch (e: any) {
             console.error(e, 500);
+            throw new Error(e);
         }
     }),
 
@@ -60,19 +63,24 @@ const departmentRouter = router({
                     },
                 });
                 return department;
-            } catch (e) {
+            } catch (e: any) {
                 console.error(e, 400);
-                return e;
+                throw new Error(e);
             }
         }),
 
     removeDepatrmentById: publicProcedure
         .input(z.number())
         .query(async (opt) => {
-            const department = await prisma.department.delete({
-                where: { id: opt.input },
-            });
-            return department;
+            try {
+                const department = await prisma.department.delete({
+                    where: { id: opt.input },
+                });
+                return department;
+            } catch (e: any) {
+                console.error(e);
+                throw new Error(e);
+            }
         }),
 });
 
