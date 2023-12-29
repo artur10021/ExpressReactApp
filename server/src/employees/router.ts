@@ -60,6 +60,22 @@ const employeeRouter = router({
         }
     }),
 
+    getFilteredByNameEmployees: publicProcedure
+        .input(z.string())
+        .query(async (opt) => {
+            try {
+                const employees = await prisma.employee.findMany({
+                    where: {
+                        fullName: { contains: opt.input },
+                    },
+                });
+                return employees;
+            } catch (e: any) {
+                console.error(e, 500);
+                throw new Error(e);
+            }
+        }),
+
     removeEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
         try {
             const employees = await prisma.employee.delete({
