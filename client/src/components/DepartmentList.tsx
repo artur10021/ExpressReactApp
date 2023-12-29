@@ -5,10 +5,13 @@ import DepartmentTable from "./DepartmentTable";
 import { Button, Modal } from "react-bootstrap";
 
 const DepartmentList: React.FC = () => {
+    const [isAddDepartmentButtonHidden, setIsAddDepartmentButtonHidden] =
+        useState(false);
+
     return (
         <div>
             <h1>Department List:</h1>
-            <DepartmentTable />
+            <DepartmentTable isAddDepartmentButtonHidden={false} />
         </div>
     );
 };

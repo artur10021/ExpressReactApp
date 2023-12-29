@@ -21,7 +21,7 @@ const EmployeesList: React.FC = () => {
         if (!filterInput) {
             setRefreshPage(!refreshPage);
         } else {
-            getFilteredEmployees(filterInput.trim().toLowerCase());
+            getFilteredEmployees(filterInput.trim());
         }
     }, [filterInput]);
 

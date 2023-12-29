@@ -6,14 +6,15 @@ import { trpc } from "../trpc";
 import DepartmentsDitails from "./DepartmentsDitails";
 import { Button, Modal } from "react-bootstrap";
 
-const DepartmentTable: React.FC = () => {
+const DepartmentTable: React.FC<{ isAddDepartmentButtonHidden: boolean }> = ({
+    isAddDepartmentButtonHidden,
+}) => {
     const [showDepartmentDitails, setShowDepartmentDitails] = useState(false);
     // const [showModal, setShowModal] = useState(false);
     const [idOfDepartmentDitails, setIdOfDepartmentDitails] =
         useState<number>(0);
 
     const [showModal, setShowModal] = useState(false);
-    const [isHidden, setIsHidden] = useState(false);
     const [nameInput, setNameInput] = useState("");
     const [descriptionInput, setDescriptionInput] = useState("");
 
@@ -94,7 +95,7 @@ const DepartmentTable: React.FC = () => {
                 </tbody>
             </Table>
             <Button
-                hidden={isHidden}
+                hidden={isAddDepartmentButtonHidden}
                 variant="info"
                 onClick={() => {
                     setShowModal(true);

@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
             <h1>Dashboard:</h1>
             <div>
                 <strong>Top 5 departments by number of employees</strong>
-                <DepartmentTable />
+                <DepartmentTable isAddDepartmentButtonHidden={true} />
                 <br />
                 <strong>5 most recently added employees;</strong>
                 <EmployeeTable
