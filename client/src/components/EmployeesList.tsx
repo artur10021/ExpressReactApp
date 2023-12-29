@@ -11,7 +11,7 @@ const EmployeesList: React.FC = () => {
         trpc.employee.getEmployees.query().then((obj: EmployeeI[]) => {
             setEployees(obj);
         });
-    }, []);
+    }, [employees]);
 
     return (
         <div>

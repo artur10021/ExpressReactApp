@@ -39,6 +39,13 @@ const employeeRouter = router({
         return employees;
     }),
 
+    removeEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
+        const employees = await prisma.employee.delete({
+            where: { id: opt.input },
+        });
+        return employees;
+    }),
+
     createEmployee: publicProcedure
         .input(
             z.object({

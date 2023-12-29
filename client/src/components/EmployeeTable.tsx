@@ -18,6 +18,8 @@ const EmployeeTable: React.FC<{
     const [jobTitleInput, setJobTitleInput] = useState("");
     const [isHeadInput, setIsHeadInput] = useState(false);
 
+    const [refreshPage, setRefreshPage] = useState(false);
+
     const [departments, setDepartments] = useState<DepartmentI[]>([]);
     const [departmentChoise, setDepartmentChoise] = useState("Depatrments:");
 
@@ -25,7 +27,11 @@ const EmployeeTable: React.FC<{
         trpc.department.getDepartments.query().then((arr: DepartmentI[]) => {
             setDepartments(arr);
         });
-    }, [departments]);
+    }, [departments, refreshPage]);
+
+    const removeEmployee = async (id: number) => {
+        await trpc.employee.removeEmployeeById.query(id);
+    };
 
     const addEmployee = async () => {
         setNameInput("");
@@ -66,6 +72,15 @@ const EmployeeTable: React.FC<{
                             <td>{employee.departmentsId}</td>
                             <td>{employee.jobTitle}</td>
                             <td>{employee.isHead ? "Yes" : "No"}</td>
+                            <Button
+                                variant="outline-danger"
+                                onClick={() => {
+                                    removeEmployee(employee.id);
+                                    setRefreshPage(true);
+                                }}
+                            >
+                                Remove
+                            </Button>{" "}
                         </tr>
                     ))}
                 </tbody>

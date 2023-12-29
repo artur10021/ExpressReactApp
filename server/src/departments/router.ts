@@ -43,6 +43,15 @@ const departmentRouter = router({
             });
             return department;
         }),
+
+    removeDepatrmentById: publicProcedure
+        .input(z.number())
+        .query(async (opt) => {
+            const department = await prisma.department.delete({
+                where: { id: opt.input },
+            });
+            return department;
+        }),
 });
 
 export default departmentRouter;

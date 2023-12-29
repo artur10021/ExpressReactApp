@@ -18,7 +18,11 @@ const DepartmentTable: React.FC = () => {
         trpc.department.getDepartments.query().then((depArr) => {
             setDepartments(depArr);
         });
-    }, []);
+    }, [departments]);
+
+    const removeDepartment = async (id: number) => {
+        await trpc.department.removeDepatrmentById.query(id);
+    };
 
     const hideDitails = () => {
         setShowDepartmentDitails(false);
@@ -61,8 +65,11 @@ const DepartmentTable: React.FC = () => {
                             <td>{department.employeesCount}</td>
                             <td>{department.description}</td>
                             <td>{department.createdAt}</td>
-                            <Button variant="outline-danger">
-                                Danger
+                            <Button
+                                variant="outline-danger"
+                                onClick={() => removeDepartment(department.id)}
+                            >
+                                Remove
                             </Button>{" "}
                         </tr>
                     ))}
