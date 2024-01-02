@@ -37,6 +37,7 @@ const EmployeesList: React.FC = () => {
     return (
         <div>
             <h1>Employees List:</h1>
+            <br />
             <InputGroup className="mb-3">
                 <Form.Control
                     placeholder="filter by username"
@@ -48,6 +49,8 @@ const EmployeesList: React.FC = () => {
                     }}
                 />
             </InputGroup>
+            <br />
+
             <EmployeeTable
                 state={employees}
                 isAddEmployeeByttonHiden={false}

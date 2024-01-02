@@ -60,6 +60,8 @@ const EmployeeTable: React.FC<{
                         <th>Department id / name:</th>
                         <th>Employee Job Title:</th>
                         <th>Is Employee Head Of Department:</th>
+                        <th>Date of creation:</th>
+                        <th>Date of updating:</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,6 +81,8 @@ const EmployeeTable: React.FC<{
                                 </td>
                                 <td>{employee.jobTitle}</td>
                                 <td>{employee.isHead ? "Yes" : "No"}</td>
+                                <td>{employee.createdAt}</td>
+                                <td>{employee.updatedAt}</td>
                                 <Button
                                     variant="outline-danger"
                                     onClick={() => {
@@ -202,7 +206,6 @@ const EmployeeTable: React.FC<{
                     <Button
                         onClick={() => {
                             setShowModal(false);
-                            // setRefreshPage();
                         }}
                     >
                         Close
