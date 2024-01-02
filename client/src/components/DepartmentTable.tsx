@@ -7,9 +7,10 @@ import DepartmentsDitails from "./DepartmentsDitails";
 import { Button, Modal } from "react-bootstrap";
 
 const DepartmentTable: React.FC<{
+    setRefreshPage: () => void;
     isAddDepartmentButtonHidden: boolean;
     departments: DepartmentI[];
-}> = ({ isAddDepartmentButtonHidden, departments }) => {
+}> = ({ isAddDepartmentButtonHidden, departments, setRefreshPage }) => {
     const [showDepartmentDitails, setShowDepartmentDitails] = useState(false);
     const [idOfDepartmentDitails, setIdOfDepartmentDitails] =
         useState<number>(0);
@@ -18,21 +19,19 @@ const DepartmentTable: React.FC<{
     const [nameInput, setNameInput] = useState("");
     const [descriptionInput, setDescriptionInput] = useState("");
 
-    const [refreshPage, setrefreshPage] = useState<boolean>(false);
-
-    const createDepartment = () => {
-        setDescriptionInput("");
-        setNameInput("");
-        setrefreshPage(true);
-        trpc.department.createDepartment.mutate({
+    const createDepartment = async () => {
+        await trpc.department.createDepartment.mutate({
             name: nameInput,
             description: descriptionInput,
         });
+        setDescriptionInput("");
+        setNameInput("");
+        setRefreshPage();
     };
 
     const removeDepartment = async (id: number) => {
         await trpc.department.removeDepatrmentById.mutate(id);
-        setrefreshPage(!refreshPage);
+        setRefreshPage();
     };
 
     const hideDitails = () => {
@@ -48,7 +47,7 @@ const DepartmentTable: React.FC<{
         <DepartmentsDitails
             departmentId={idOfDepartmentDitails}
             hideDitails={hideDitails}
-            setrefreshPage={setrefreshPage}
+            setRefreshPage={setRefreshPage}
         />
     ) : (
         <>
@@ -136,7 +135,6 @@ const DepartmentTable: React.FC<{
                         variant="success"
                         onClick={() => {
                             createDepartment();
-                            setrefreshPage(true);
                         }}
                     >
                         Create department

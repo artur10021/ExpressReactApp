@@ -73,6 +73,11 @@ const departmentRouter = router({
         .input(z.number())
         .mutation(async (opt) => {
             try {
+                await prisma.employee.deleteMany({
+                    where: {
+                        departmentsId: opt.input,
+                    },
+                });
                 const department = await prisma.department.delete({
                     where: { id: opt.input },
                 });

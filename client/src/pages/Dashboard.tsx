@@ -31,6 +31,9 @@ const Dashboard: React.FC = () => {
             <div>
                 <strong>Top 5 departments by number of employees</strong>
                 <DepartmentTable
+                    setRefreshPage={() => {
+                        setRefreshPage(!refreshPage);
+                    }}
                     departments={topDepartments}
                     isAddDepartmentButtonHidden={true}
                 />
@@ -39,7 +42,9 @@ const Dashboard: React.FC = () => {
                 <EmployeeTable
                     state={topEmployees}
                     isAddEmployeeByttonHiden={true}
-                    setRefreshPage={setRefreshPage}
+                    setRefreshPage={() => {
+                        setRefreshPage(!refreshPage);
+                    }}
                 />
             </div>
         </div>

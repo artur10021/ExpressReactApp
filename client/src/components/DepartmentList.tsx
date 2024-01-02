@@ -7,17 +7,21 @@ import { DepartmentI } from "../types/DepartmentI";
 
 const DepartmentList: React.FC = () => {
     const [departments, setDepartments] = useState<DepartmentI[]>([]);
+    const [refreshPage, setRefreshPage] = useState(false);
 
     useEffect(() => {
         trpc.department.getDepartments.query().then((depArr) => {
             setDepartments(depArr);
         });
-    }, []);
+    }, [refreshPage]);
 
     return (
         <div>
             <h1>Department List:</h1>
             <DepartmentTable
+                setRefreshPage={() => {
+                    setRefreshPage(!refreshPage);
+                }}
                 departments={departments}
                 isAddDepartmentButtonHidden={false}
             />

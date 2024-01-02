@@ -9,7 +9,7 @@ import { DepartmentI } from "../types/DepartmentI";
 const EmployeeTable: React.FC<{
     state: EmployeeI[];
     isAddEmployeeByttonHiden: boolean;
-    setRefreshPage: (value: boolean) => void;
+    setRefreshPage: () => void;
 }> = ({ state, isAddEmployeeByttonHiden, setRefreshPage }) => {
     const [showModal, setShowModal] = useState(false);
 
@@ -30,15 +30,10 @@ const EmployeeTable: React.FC<{
 
     const removeEmployee = async (id: number) => {
         await trpc.employee.removeEmployeeById.mutate(id);
+        setRefreshPage();
     };
 
     const addEmployee = async () => {
-        setNameInput("");
-        setEmailInput("");
-        setdepartmentIdInput(0);
-        setJobTitleInput("");
-        setIsHeadInput(false);
-
         await trpc.employee.createEmployee.mutate({
             email: emailInput,
             fullName: nameInput,
@@ -46,6 +41,12 @@ const EmployeeTable: React.FC<{
             jobTitle: jobTitleInput,
             isHead: isHeadInput,
         });
+        setNameInput("");
+        setEmailInput("");
+        setdepartmentIdInput(0);
+        setJobTitleInput("");
+        setIsHeadInput(false);
+        setRefreshPage();
     };
 
     return (
@@ -82,7 +83,6 @@ const EmployeeTable: React.FC<{
                                     variant="outline-danger"
                                     onClick={() => {
                                         removeEmployee(employee.id);
-                                        setRefreshPage(true);
                                     }}
                                 >
                                     Remove
@@ -202,7 +202,7 @@ const EmployeeTable: React.FC<{
                     <Button
                         onClick={() => {
                             setShowModal(false);
-                            setRefreshPage(true);
+                            // setRefreshPage();
                         }}
                     >
                         Close

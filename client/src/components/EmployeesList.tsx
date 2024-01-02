@@ -51,7 +51,7 @@ const EmployeesList: React.FC = () => {
             <EmployeeTable
                 state={employees}
                 isAddEmployeeByttonHiden={false}
-                setRefreshPage={setRefreshPage}
+                setRefreshPage={() => setRefreshPage(!refreshPage)}
             />
         </div>
     );
