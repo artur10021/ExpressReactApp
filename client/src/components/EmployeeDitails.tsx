@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "./Header";
-import TableComp from "./DepartmentTable";
 
 const EmployeeDitails: React.FC = () => {
     return (

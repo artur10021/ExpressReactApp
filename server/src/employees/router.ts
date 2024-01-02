@@ -121,6 +121,19 @@ const employeeRouter = router({
                     );
                 }
 
+                if (opts.input.isHead) {
+                    const head = await prisma.employee.findFirst({
+                        where: {
+                            departmentsId: opts.input.departmentsId,
+                            isHead: true,
+                        },
+                    });
+                    if (head)
+                        throw Error(
+                            "The head of this department already exists!"
+                        );
+                }
+
                 const employee = await prisma.employee.create({
                     data: {
                         email: opts.input.email,
@@ -141,7 +154,7 @@ const employeeRouter = router({
                 });
                 return employee;
             } catch (e: any) {
-                console.error(e, 400);
+                console.error(e, 500);
                 throw new Error(e);
             }
         }),

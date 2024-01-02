@@ -6,11 +6,11 @@ import { trpc } from "../trpc";
 import DepartmentsDitails from "./DepartmentsDitails";
 import { Button, Modal } from "react-bootstrap";
 
-const DepartmentTable: React.FC<{ isAddDepartmentButtonHidden: boolean }> = ({
-    isAddDepartmentButtonHidden,
-}) => {
+const DepartmentTable: React.FC<{
+    isAddDepartmentButtonHidden: boolean;
+    departments: DepartmentI[];
+}> = ({ isAddDepartmentButtonHidden, departments }) => {
     const [showDepartmentDitails, setShowDepartmentDitails] = useState(false);
-    // const [showModal, setShowModal] = useState(false);
     const [idOfDepartmentDitails, setIdOfDepartmentDitails] =
         useState<number>(0);
 
@@ -18,14 +18,7 @@ const DepartmentTable: React.FC<{ isAddDepartmentButtonHidden: boolean }> = ({
     const [nameInput, setNameInput] = useState("");
     const [descriptionInput, setDescriptionInput] = useState("");
 
-    const [departments, setDepartments] = useState<DepartmentI[]>([]);
     const [refreshPage, setrefreshPage] = useState<boolean>(false);
-
-    useEffect(() => {
-        trpc.department.getDepartments.query().then((depArr) => {
-            setDepartments(depArr);
-        });
-    }, [refreshPage, showModal]);
 
     const createDepartment = () => {
         setDescriptionInput("");

@@ -3,8 +3,7 @@ import EmployeeTable from "../components/EmployeeTable";
 import { trpc } from "../trpc";
 import { EmployeeI } from "../types/EmployeeI";
 import { DepartmentI } from "../types/DepartmentI";
-import DepartmentTable from "./DepartmentTable";
-import style from "./styles/DitailsWrapper.module.scss";
+
 import { Button, Table } from "react-bootstrap";
 
 const DepartmentsDitails: React.FC<{
