@@ -56,31 +56,40 @@ const EmployeeTable: React.FC<{
                         <th>#</th>
                         <th>Employee Email:</th>
                         <th>Employee Full Name:</th>
-                        <th>Department id:</th>
+                        <th>Department id / name:</th>
                         <th>Employee Job Title:</th>
                         <th>Is Employee Head Of Department:</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {state.map((employee, index) => (
-                        <tr key={employee.id}>
-                            <td>{index + 1}</td>
-                            <td>{employee.email}</td>
-                            <td>{employee.fullName}</td>
-                            <td>{employee.departmentsId}</td>
-                            <td>{employee.jobTitle}</td>
-                            <td>{employee.isHead ? "Yes" : "No"}</td>
-                            <Button
-                                variant="outline-danger"
-                                onClick={() => {
-                                    removeEmployee(employee.id);
-                                    setRefreshPage(true);
-                                }}
-                            >
-                                Remove
-                            </Button>{" "}
-                        </tr>
-                    ))}
+                    {state.map((employee, index) => {
+                        const department = departments.find(
+                            (dep) => dep.id === employee.departmentsId
+                        );
+
+                        return (
+                            <tr key={employee.id}>
+                                <td>{index + 1}</td>
+                                <td>{employee.email}</td>
+                                <td>{employee.fullName}</td>
+                                <td>
+                                    {employee.departmentsId} /{" "}
+                                    {department?.name}
+                                </td>
+                                <td>{employee.jobTitle}</td>
+                                <td>{employee.isHead ? "Yes" : "No"}</td>
+                                <Button
+                                    variant="outline-danger"
+                                    onClick={() => {
+                                        removeEmployee(employee.id);
+                                        setRefreshPage(true);
+                                    }}
+                                >
+                                    Remove
+                                </Button>{" "}
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </Table>
             <br />
