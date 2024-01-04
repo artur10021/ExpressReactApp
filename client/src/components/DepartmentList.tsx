@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { EmployeeI } from "../types/EmployeeI";
 import { trpc } from "../trpc";
 import DepartmentTable from "./DepartmentTable";
-import { Button, Modal } from "react-bootstrap";
 import { DepartmentI } from "../types/DepartmentI";
 
 const DepartmentList: React.FC = () => {

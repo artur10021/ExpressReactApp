@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EmployeeI } from "../types/EmployeeI";
-import { Button, Dropdown, Form, InputGroup, Modal } from "react-bootstrap";
+import { Button, Dropdown, Modal } from "react-bootstrap";
 import { trpc } from "../trpc";
 import { DepartmentI } from "../types/DepartmentI";
 

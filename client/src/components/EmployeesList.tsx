@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
 import { EmployeeI } from "../types/EmployeeI";
 import { trpc } from "../trpc";
 import EmployeeTable from "./EmployeeTable";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 
 const EmployeesList: React.FC = () => {
     const [employees, setEployees] = useState<EmployeeI[]>([]);
