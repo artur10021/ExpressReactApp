@@ -1,29 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
 import DepartmentTable from "../components/DepartmentTable";
 import { trpc } from "../trpc";
-import { DepartmentI } from "../types/DepartmentI";
-import { EmployeeI } from "../types/EmployeeI";
+
 import EmployeeTable from "../components/EmployeeTable";
 
 const Dashboard: React.FC = () => {
-    const [topDepartments, setTopDepartments] = useState<DepartmentI[]>([]);
-    const [topEmployees, setTopEployees] = useState<EmployeeI[]>([]);
     const [refreshPage, setRefreshPage] = useState(false);
 
-    useEffect(() => {
-        trpc.department.getTopFiveDepartmentsByEmployeesCount
-            .query()
-            .then((DepArr) => {
-                setTopDepartments(DepArr);
-            });
+    const topDepartments =
+        trpc.department.getTopFiveDepartmentsByEmployeesCount.useQuery().data;
 
-        trpc.employee.getFiveLastAddedEmployees
-            .query()
-            .then((emplArr: EmployeeI[]) => {
-                setTopEployees(emplArr);
-            });
-    }, [refreshPage]);
+    const fiveLastAddedEmployees =
+        trpc.employee.getFiveLastAddedEmployees.useQuery().data;
+
     return (
         <div>
             <Header />
@@ -40,7 +30,7 @@ const Dashboard: React.FC = () => {
                 <br />
                 <strong>5 most recently added employees;</strong>
                 <EmployeeTable
-                    state={topEmployees}
+                    state={fiveLastAddedEmployees}
                     isAddEmployeeByttonHiden={true}
                     setRefreshPage={() => {
                         setRefreshPage(!refreshPage);

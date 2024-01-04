@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import EmployeeTable from "../components/EmployeeTable";
 import { trpc } from "../trpc";
-import { EmployeeI } from "../types/EmployeeI";
-import { DepartmentI } from "../types/DepartmentI";
 
 import { Button, Table } from "react-bootstrap";
 
@@ -11,21 +9,10 @@ const DepartmentsDitails: React.FC<{
     hideDitails: () => void;
     setRefreshPage: () => void;
 }> = (props) => {
-    const [employees, setEployees] = useState<EmployeeI[]>([]);
-    const [department, setDepartment] = useState<DepartmentI | null>(null);
-
-    useEffect(() => {
-        trpc.employee.getEmployeesByDepartment
-            .query(props.departmentId)
-            .then((obj: EmployeeI[]) => {
-                setEployees(obj);
-            });
-        trpc.department.getDepartmentById
-            .query(props.departmentId)
-            .then((department) => {
-                setDepartment(department);
-            });
-    }, []);
+    const employees = trpc.employee.getEmployees.useQuery().data;
+    const department = trpc.department.getDepartmentById.useQuery(
+        props.departmentId
+    ).data;
 
     return (
         <div>

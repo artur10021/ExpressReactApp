@@ -1,37 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { EmployeeI } from "../types/EmployeeI";
 import { trpc } from "../trpc";
 import EmployeeTable from "./EmployeeTable";
 import { Form, InputGroup } from "react-bootstrap";
 
 const EmployeesList: React.FC = () => {
-    const [employees, setEployees] = useState<EmployeeI[]>([]);
     const [refreshPage, setRefreshPage] = useState(false);
 
     const [filterInput, setFilterInput] = useState("");
 
+    const employees =
+        trpc.employee.getFilteredByNameEmployees.useQuery(filterInput) ||
+        trpc.employee.getEmployees.useQuery();
+
     useEffect(() => {
-        trpc.employee.getEmployees.query().then((obj: EmployeeI[]) => {
-            setEployees(obj);
-        });
+        employees.refetch();
     }, [refreshPage]);
-
-    useEffect(() => {
-        if (!filterInput) {
-            setRefreshPage(!refreshPage);
-        } else {
-            getFilteredEmployees(filterInput.trim());
-        }
-    }, [filterInput]);
-
-    const getFilteredEmployees = async (value: string) => {
-        await trpc.employee.getFilteredByNameEmployees
-            .query(value)
-            .then((employees) => {
-                console.log(employees);
-                setEployees(employees);
-            });
-    };
 
     return (
         <div>
@@ -51,7 +34,7 @@ const EmployeesList: React.FC = () => {
             <br />
 
             <EmployeeTable
-                state={employees}
+                state={employees.data}
                 isAddEmployeeByttonHiden={false}
                 setRefreshPage={() => setRefreshPage(!refreshPage)}
             />

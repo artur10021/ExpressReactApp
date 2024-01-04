@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { DepartmentI } from "../types/DepartmentI";
 import { trpc } from "../trpc";
 import DepartmentsDitails from "./DepartmentsDitails";
 import { Button, Modal } from "react-bootstrap";
@@ -9,7 +8,7 @@ import { Button, Modal } from "react-bootstrap";
 const DepartmentTable: React.FC<{
     setRefreshPage: () => void;
     isAddDepartmentButtonHidden: boolean;
-    departments: DepartmentI[];
+    departments: any;
 }> = ({ isAddDepartmentButtonHidden, departments, setRefreshPage }) => {
     const [showDepartmentDitails, setShowDepartmentDitails] = useState(false);
     const [idOfDepartmentDitails, setIdOfDepartmentDitails] =
@@ -19,20 +18,20 @@ const DepartmentTable: React.FC<{
     const [nameInput, setNameInput] = useState("");
     const [descriptionInput, setDescriptionInput] = useState("");
 
-    const createDepartment = async () => {
-        await trpc.department.createDepartment.mutate({
-            name: nameInput,
-            description: descriptionInput,
-        });
-        setDescriptionInput("");
-        setNameInput("");
-        setRefreshPage();
-    };
+    const createDepartment = trpc.department.createDepartment.useMutation({
+        onSuccess: () => {
+            setDescriptionInput("");
+            setNameInput("");
+            setRefreshPage();
+        },
+    });
 
-    const removeDepartment = async (id: number) => {
-        await trpc.department.removeDepatrmentById.mutate(id);
-        setRefreshPage();
-    };
+    const removeDepartment = trpc.department.removeDepatrmentById.useMutation({
+        onSuccess: () => {
+            setShowDepartmentDitails(false);
+            setRefreshPage();
+        },
+    });
 
     const hideDitails = () => {
         setShowDepartmentDitails(false);
@@ -63,22 +62,24 @@ const DepartmentTable: React.FC<{
                     </tr>
                 </thead>
                 <tbody>
-                    {departments.map((department, index: number) => (
+                    {departments?.map((department: any, index: number) => (
                         <tr
-                            key={department.id}
+                            key={department?.id}
                             onDoubleClick={() => {
-                                showDitails(department.id);
+                                showDitails(department?.id);
                             }}
                         >
                             <td>{index + 1}</td>
-                            <td>{department.id}</td>
-                            <td>{department.name}</td>
-                            <td>{department.employeesCount}</td>
-                            <td>{department.description}</td>
-                            <td>{department.createdAt}</td>
+                            <td>{department?.id}</td>
+                            <td>{department?.name}</td>
+                            <td>{department?.employeesCount}</td>
+                            <td>{department?.description}</td>
+                            <td>{department?.createdAt}</td>
                             <Button
                                 variant="outline-danger"
-                                onClick={() => removeDepartment(department.id)}
+                                onClick={() =>
+                                    removeDepartment.mutate(department?.id)
+                                }
                             >
                                 Remove
                             </Button>{" "}
@@ -134,7 +135,10 @@ const DepartmentTable: React.FC<{
                     <Button
                         variant="success"
                         onClick={() => {
-                            createDepartment();
+                            createDepartment.mutate({
+                                name: nameInput,
+                                description: descriptionInput,
+                            });
                         }}
                     >
                         Create department

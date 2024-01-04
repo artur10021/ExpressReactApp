@@ -7,7 +7,6 @@ const DepartmentsPage: React.FC = () => {
     return (
         <div>
             <Header />
-
             <DepartmentList />
         </div>
     );

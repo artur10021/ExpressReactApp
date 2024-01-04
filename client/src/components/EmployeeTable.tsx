@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { EmployeeI } from "../types/EmployeeI";
 import { Button, Dropdown, Modal } from "react-bootstrap";
 import { trpc } from "../trpc";
-import { DepartmentI } from "../types/DepartmentI";
 
 const EmployeeTable: React.FC<{
-    state: EmployeeI[];
+    state: any;
     isAddEmployeeByttonHiden: boolean;
     setRefreshPage: () => void;
 }> = ({ state, isAddEmployeeByttonHiden, setRefreshPage }) => {
@@ -19,35 +17,24 @@ const EmployeeTable: React.FC<{
     const [jobTitleInput, setJobTitleInput] = useState("");
     const [isHeadInput, setIsHeadInput] = useState(false);
 
-    const [departments, setDepartments] = useState<DepartmentI[]>([]);
     const [departmentChoise, setDepartmentChoise] = useState("Depatrments:");
 
-    useEffect(() => {
-        trpc.department.getDepartments.query().then((arr: DepartmentI[]) => {
-            setDepartments(arr);
-        });
-    }, []);
+    const departments = trpc.department.getDepartments.useQuery().data;
 
-    const removeEmployee = async (id: number) => {
-        await trpc.employee.removeEmployeeById.mutate(id);
-        setRefreshPage();
-    };
+    const removeEmployee = trpc.employee.removeEmployeeById.useMutation({
+        onSuccess: () => setRefreshPage(),
+    });
 
-    const addEmployee = async () => {
-        await trpc.employee.createEmployee.mutate({
-            email: emailInput,
-            fullName: nameInput,
-            departmentsId: departmentIdInput,
-            jobTitle: jobTitleInput,
-            isHead: isHeadInput,
-        });
-        setNameInput("");
-        setEmailInput("");
-        setdepartmentIdInput(0);
-        setJobTitleInput("");
-        setIsHeadInput(false);
-        setRefreshPage();
-    };
+    const addEmployee = trpc.employee.createEmployee.useMutation({
+        onSuccess: () => {
+            setNameInput("");
+            setEmailInput("");
+            setdepartmentIdInput(0);
+            setJobTitleInput("");
+            setIsHeadInput(false);
+            setRefreshPage();
+        },
+    });
 
     return (
         <>
@@ -65,8 +52,8 @@ const EmployeeTable: React.FC<{
                     </tr>
                 </thead>
                 <tbody>
-                    {state.map((employee, index) => {
-                        const department = departments.find(
+                    {state?.map((employee: any, index: number) => {
+                        const department = departments?.find(
                             (dep) => dep.id === employee.departmentsId
                         );
 
@@ -86,7 +73,7 @@ const EmployeeTable: React.FC<{
                                 <Button
                                     variant="outline-danger"
                                     onClick={() => {
-                                        removeEmployee(employee.id);
+                                        removeEmployee.mutate(employee.id);
                                     }}
                                 >
                                     Remove
@@ -154,7 +141,7 @@ const EmployeeTable: React.FC<{
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                {departments.map((department) => {
+                                {departments?.map((department) => {
                                     return (
                                         <>
                                             <Dropdown.Item
@@ -200,7 +187,18 @@ const EmployeeTable: React.FC<{
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={addEmployee}>
+                    <Button
+                        variant="success"
+                        onClick={() => {
+                            addEmployee.mutate({
+                                email: emailInput,
+                                fullName: nameInput,
+                                departmentsId: departmentIdInput,
+                                jobTitle: jobTitleInput,
+                                isHead: isHeadInput,
+                            });
+                        }}
+                    >
                         Add employee
                     </Button>{" "}
                     <Button

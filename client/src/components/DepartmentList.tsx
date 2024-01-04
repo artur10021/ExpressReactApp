@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { trpc } from "../trpc";
 import DepartmentTable from "./DepartmentTable";
-import { DepartmentI } from "../types/DepartmentI";
 
 const DepartmentList: React.FC = () => {
-    const [departments, setDepartments] = useState<DepartmentI[]>([]);
     const [refreshPage, setRefreshPage] = useState(false);
 
+    const departments = trpc.department.getDepartments.useQuery();
+
     useEffect(() => {
-        trpc.department.getDepartments.query().then((depArr) => {
-            setDepartments(depArr);
-        });
+        departments.refetch();
     }, [refreshPage]);
 
     return (
@@ -20,7 +18,7 @@ const DepartmentList: React.FC = () => {
                 setRefreshPage={() => {
                     setRefreshPage(!refreshPage);
                 }}
-                departments={departments}
+                departments={departments.data}
                 isAddDepartmentButtonHidden={false}
             />
         </div>
