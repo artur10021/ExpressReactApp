@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { trpc } from "../trpc";
+import { trpc, RouterOutputs } from "../trpc";
 import DepartmentsDitails from "./DepartmentsDitails";
 import { Button, Modal } from "react-bootstrap";
+
+type GetDepartmentsOutput = RouterOutputs["department"]["getDepartments"];
 
 const DepartmentTable: React.FC<{
     setRefreshPage: () => void;
     isAddDepartmentButtonHidden: boolean;
-    departments: any;
+    departments: GetDepartmentsOutput | undefined;
 }> = ({ isAddDepartmentButtonHidden, departments, setRefreshPage }) => {
     const [showDepartmentDitails, setShowDepartmentDitails] = useState(false);
     const [idOfDepartmentDitails, setIdOfDepartmentDitails] =
@@ -62,7 +64,7 @@ const DepartmentTable: React.FC<{
                     </tr>
                 </thead>
                 <tbody>
-                    {departments?.map((department: any, index: number) => (
+                    {departments?.map((department, index: number) => (
                         <tr
                             key={department?.id}
                             onDoubleClick={() => {

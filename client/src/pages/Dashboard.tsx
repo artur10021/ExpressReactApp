@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import DepartmentTable from "../components/DepartmentTable";
 import { trpc } from "../trpc";
-
 import EmployeeTable from "../components/EmployeeTable";
 
 const Dashboard: React.FC = () => {

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Dropdown, Modal } from "react-bootstrap";
-import { trpc } from "../trpc";
+import { trpc, type RouterOutputs } from "../trpc";
+
+type GetEmployeesOutput = RouterOutputs["employee"]["getEmployees"];
 
 const EmployeeTable: React.FC<{
-    state: any;
+    state: GetEmployeesOutput | undefined;
     isAddEmployeeByttonHiden: boolean;
     setRefreshPage: () => void;
 }> = ({ state, isAddEmployeeByttonHiden, setRefreshPage }) => {
@@ -52,7 +54,7 @@ const EmployeeTable: React.FC<{
                     </tr>
                 </thead>
                 <tbody>
-                    {state?.map((employee: any, index: number) => {
+                    {state?.map((employee, index: number) => {
                         const department = departments?.find(
                             (dep) => dep.id === employee.departmentsId
                         );

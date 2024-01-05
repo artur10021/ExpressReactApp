@@ -1,11 +1,12 @@
 import React from "react";
 import EmployeeTable from "../components/EmployeeTable";
-import { trpc } from "../trpc";
-
+import { trpc, RouterInputs } from "../trpc";
 import { Button, Table } from "react-bootstrap";
 
+type DepartmentByIdInput = RouterInputs["department"]["getDepartmentById"];
+
 const DepartmentsDitails: React.FC<{
-    departmentId: number;
+    departmentId: DepartmentByIdInput;
     hideDitails: () => void;
     setRefreshPage: () => void;
 }> = (props) => {
