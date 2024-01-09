@@ -2,7 +2,6 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
 import { TRPCError } from "@trpc/server";
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library.js";
 
 const prisma = new PrismaClient();
 
@@ -10,10 +9,18 @@ const employeeRouter = router({
     getEmployees: publicProcedure.query(async () => {
         try {
             const employees = await prisma.employee.findMany();
+
+            if (employees.length === 0) {
+                const error: TRPCError = new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Employees not found",
+                });
+                throw error;
+            }
+
             return employees;
-        } catch (e: any) {
-            console.error(e, 500);
-            throw new Error(e);
+        } catch (error) {
+            throw error;
         }
     }),
 
@@ -22,10 +29,18 @@ const employeeRouter = router({
             const employee = await prisma.employee.findUnique({
                 where: { id: opt.input },
             });
+
+            if (!employee) {
+                const error: TRPCError = new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Employee not found",
+                });
+                throw error;
+            }
+
             return employee;
-        } catch (e: any) {
-            console.error(e, 500);
-            throw new Error(e);
+        } catch (error) {
+            throw error;
         }
     }),
 
@@ -36,10 +51,18 @@ const employeeRouter = router({
                 const employees = await prisma.employee.findMany({
                     where: { departmentsId: opt.input },
                 });
+
+                if (employees.length === 0) {
+                    const error: TRPCError = new TRPCError({
+                        code: "NOT_FOUND",
+                        message: "Employees not found",
+                    });
+                    throw error;
+                }
+
                 return employees;
-            } catch (e: any) {
-                console.error(e, 500);
-                throw new Error(e);
+            } catch (error) {
+                throw error;
             }
         }),
 
@@ -51,10 +74,18 @@ const employeeRouter = router({
                     createdAt: "desc",
                 },
             });
+
+            if (employees.length === 0) {
+                const error: TRPCError = new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Employees not found",
+                });
+                throw error;
+            }
+
             return employees;
-        } catch (e: any) {
-            console.error(e, 500);
-            throw new Error(e);
+        } catch (error) {
+            throw error;
         }
     }),
 
@@ -68,9 +99,8 @@ const employeeRouter = router({
                     },
                 });
                 return employees;
-            } catch (e: any) {
-                console.error(e, 500);
-                throw new Error(e);
+            } catch (error) {
+                throw error;
             }
         }),
 
@@ -78,22 +108,21 @@ const employeeRouter = router({
         .input(z.number())
         .mutation(async (opt) => {
             try {
-                const employees = await prisma.employee.delete({
+                const employee = await prisma.employee.delete({
                     where: { id: opt.input },
                 });
 
                 await prisma.department.update({
-                    where: { id: employees.departmentsId },
+                    where: { id: employee.departmentsId },
                     data: {
                         employeesCount: {
                             increment: -1,
                         },
                     },
                 });
-                return employees;
-            } catch (e: any) {
-                console.error(e, 500);
-                throw new Error(e);
+                return employee;
+            } catch (error) {
+                throw error;
             }
         }),
 
@@ -109,14 +138,30 @@ const employeeRouter = router({
         )
         .mutation(async (opts) => {
             try {
+                const department = await prisma.department.findUnique({
+                    where: {
+                        id: opts.input.departmentsId,
+                    },
+                });
+                if (!department) {
+                    const error: TRPCError = new TRPCError({
+                        code: "BAD_REQUEST",
+                        message: "Department with such ID not exist",
+                    });
+                    throw error;
+                }
+
                 if (
                     !opts.input.email ||
                     !opts.input.jobTitle ||
                     !opts.input.fullName
                 ) {
-                    throw Error(
-                        "email/jobTitle/fullName fields can not be empty"
-                    );
+                    const error = new TRPCError({
+                        message:
+                            "email/jobTitle/fullName fields can not be empty",
+                        code: "BAD_REQUEST",
+                    });
+                    throw error;
                 }
 
                 if (opts.input.isHead) {
@@ -126,10 +171,14 @@ const employeeRouter = router({
                             isHead: true,
                         },
                     });
-                    if (head)
-                        throw Error(
-                            "The head of this department already exists!"
-                        );
+                    if (head) {
+                        const error = new TRPCError({
+                            message:
+                                "The head of this department already exists!",
+                            code: "CONFLICT",
+                        });
+                        throw error;
+                    }
                 }
 
                 const employee = await prisma.employee.create({
@@ -151,9 +200,8 @@ const employeeRouter = router({
                     },
                 });
                 return employee;
-            } catch (e: any) {
-                console.error(e, 500);
-                throw new Error(e);
+            } catch (error) {
+                throw error;
             }
         }),
 });
