@@ -35,6 +35,7 @@ const EmployeeTable: React.FC<{
             setJobTitleInput("");
             setIsHeadInput(false);
             setRefreshPage();
+            setDepartmentChoise("Depatrments:");
         },
     });
 
