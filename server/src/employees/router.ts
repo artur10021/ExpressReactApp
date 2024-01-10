@@ -6,23 +6,34 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const employeeRouter = router({
-    getEmployees: publicProcedure.query(async () => {
-        try {
-            const employees = await prisma.employee.findMany();
+    getEmployeesWithNameFilter: publicProcedure
+        .input(z.string().optional())
+        .query(async (opt) => {
+            try {
+                if (opt.input) {
+                    const employeesByName = await prisma.employee.findMany({
+                        where: {
+                            fullName: { contains: opt.input },
+                        },
+                    });
+                    return employeesByName;
+                }
 
-            if (employees.length === 0) {
-                const error: TRPCError = new TRPCError({
-                    code: "NOT_FOUND",
-                    message: "Employees not found",
-                });
+                const employees = await prisma.employee.findMany();
+
+                if (employees.length === 0) {
+                    const error: TRPCError = new TRPCError({
+                        code: "NOT_FOUND",
+                        message: "Employees not found",
+                    });
+                    throw error;
+                }
+
+                return employees;
+            } catch (error) {
                 throw error;
             }
-
-            return employees;
-        } catch (error) {
-            throw error;
-        }
-    }),
+        }),
 
     getEmployeeById: publicProcedure.input(z.number()).query(async (opt) => {
         try {
@@ -88,21 +99,6 @@ const employeeRouter = router({
             throw error;
         }
     }),
-
-    getFilteredByNameEmployees: publicProcedure
-        .input(z.string())
-        .query(async (opt) => {
-            try {
-                const employees = await prisma.employee.findMany({
-                    where: {
-                        fullName: { contains: opt.input },
-                    },
-                });
-                return employees;
-            } catch (error) {
-                throw error;
-            }
-        }),
 
     removeEmployeeById: publicProcedure
         .input(z.number())

@@ -9,8 +9,7 @@ const EmployeesList: React.FC = () => {
     const [filterInput, setFilterInput] = useState("");
 
     const employees =
-        trpc.employee.getFilteredByNameEmployees.useQuery(filterInput) ||
-        trpc.employee.getEmployees.useQuery();
+        trpc.employee.getEmployeesWithNameFilter.useQuery(filterInput);
 
     useEffect(() => {
         employees.refetch();

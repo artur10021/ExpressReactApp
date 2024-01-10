@@ -10,7 +10,7 @@ const DepartmentsDitails: React.FC<{
     hideDitails: () => void;
     setRefreshPage: () => void;
 }> = (props) => {
-    const employees = trpc.employee.getEmployees.useQuery().data;
+    const employees = trpc.employee.getEmployeesWithNameFilter.useQuery().data;
     const department = trpc.department.getDepartmentById.useQuery(
         props.departmentId
     ).data;

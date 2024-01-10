@@ -4,7 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Dropdown, Modal } from "react-bootstrap";
 import { trpc, type RouterOutputs } from "../trpc";
 
-type GetEmployeesOutput = RouterOutputs["employee"]["getEmployees"];
+type GetEmployeesOutput =
+    RouterOutputs["employee"]["getEmployeesWithNameFilter"];
 
 const EmployeeTable: React.FC<{
     state: GetEmployeesOutput | undefined;
