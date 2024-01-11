@@ -55,14 +55,17 @@ const EmployeeTable: React.FC<{
                                 <td>{employee.isHead ? "Yes" : "No"}</td>
                                 <td>{employee.createdAt}</td>
                                 <td>{employee.updatedAt}</td>
-                                <Button
-                                    variant="outline-danger"
-                                    onClick={() => {
-                                        removeEmployee.mutate(employee.id);
-                                    }}
-                                >
-                                    Remove
-                                </Button>{" "}
+                                <td>
+                                    {" "}
+                                    <Button
+                                        variant="outline-danger"
+                                        onClick={() => {
+                                            removeEmployee.mutate(employee.id);
+                                        }}
+                                    >
+                                        Remove
+                                    </Button>{" "}
+                                </td>
                             </tr>
                         );
                     })}

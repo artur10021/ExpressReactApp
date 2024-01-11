@@ -85,22 +85,21 @@ const EmployeesModalForm: React.FC<{
                                 <Dropdown.Menu>
                                     {departments?.map((department) => {
                                         return (
-                                            <>
-                                                <Dropdown.Item
-                                                    onClick={() => {
-                                                        setValue(
-                                                            "departmentId",
-                                                            department.id
-                                                        );
-                                                        setDepartmentChoise(
-                                                            department.name
-                                                        );
-                                                    }}
-                                                >
-                                                    Department name:{" "}
-                                                    {department.name}
-                                                </Dropdown.Item>
-                                            </>
+                                            <Dropdown.Item
+                                                key={department.id}
+                                                onClick={() => {
+                                                    setValue(
+                                                        "departmentId",
+                                                        department.id
+                                                    );
+                                                    setDepartmentChoise(
+                                                        department.name
+                                                    );
+                                                }}
+                                            >
+                                                Department name:{" "}
+                                                {department.name}
+                                            </Dropdown.Item>
                                         );
                                     })}
                                 </Dropdown.Menu>

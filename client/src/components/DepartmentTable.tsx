@@ -3,7 +3,8 @@ import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { trpc, RouterOutputs } from "../trpc";
 import DepartmentsDitails from "./DepartmentsDitails";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import DepartmentModalForm from "./DepartmentModalForm";
 
 type GetDepartmentsOutput = RouterOutputs["department"]["getDepartments"];
 
@@ -17,16 +18,6 @@ const DepartmentTable: React.FC<{
         useState<number>(0);
 
     const [showModal, setShowModal] = useState(false);
-    const [nameInput, setNameInput] = useState("");
-    const [descriptionInput, setDescriptionInput] = useState("");
-
-    const createDepartment = trpc.department.createDepartment.useMutation({
-        onSuccess: () => {
-            setDescriptionInput("");
-            setNameInput("");
-            setRefreshPage();
-        },
-    });
 
     const removeDepartment = trpc.department.removeDepatrmentById.useMutation({
         onSuccess: () => {
@@ -66,25 +57,27 @@ const DepartmentTable: React.FC<{
                 <tbody>
                     {departments?.map((department, index: number) => (
                         <tr
-                            key={department?.id}
+                            key={department.id}
                             onDoubleClick={() => {
-                                showDitails(department?.id);
+                                showDitails(department.id);
                             }}
                         >
                             <td>{index + 1}</td>
-                            <td>{department?.id}</td>
-                            <td>{department?.name}</td>
-                            <td>{department?.employeesCount}</td>
-                            <td>{department?.description}</td>
-                            <td>{department?.createdAt}</td>
-                            <Button
-                                variant="outline-danger"
-                                onClick={() =>
-                                    removeDepartment.mutate(department?.id)
-                                }
-                            >
-                                Remove
-                            </Button>{" "}
+                            <td>{department.id}</td>
+                            <td>{department.name}</td>
+                            <td>{department.employeesCount}</td>
+                            <td>{department.description}</td>
+                            <td>{department.createdAt}</td>
+                            <td>
+                                <Button
+                                    variant="outline-danger"
+                                    onClick={() =>
+                                        removeDepartment.mutate(department?.id)
+                                    }
+                                >
+                                    Remove
+                                </Button>{" "}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -98,62 +91,11 @@ const DepartmentTable: React.FC<{
             >
                 Add new department
             </Button>{" "}
-            <Modal
-                show={showModal}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        Department Adding
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div>
-                        <p>Department name:</p>
-                        <input
-                            placeholder="name"
-                            value={nameInput}
-                            onChange={(e) => {
-                                setNameInput(e.currentTarget.value);
-                            }}
-                        />
-                    </div>
-                    <br />
-                    <div>
-                        <p>Department description:</p>
-
-                        <input
-                            placeholder="description"
-                            value={descriptionInput}
-                            onChange={(e) => {
-                                setDescriptionInput(e.currentTarget.value);
-                            }}
-                        />
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="success"
-                        onClick={() => {
-                            createDepartment.mutate({
-                                name: nameInput,
-                                description: descriptionInput,
-                            });
-                        }}
-                    >
-                        Create department
-                    </Button>{" "}
-                    <Button
-                        onClick={() => {
-                            setShowModal(false);
-                        }}
-                    >
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <DepartmentModalForm
+                showModal={showModal}
+                setRefreshPage={setRefreshPage}
+                setShowModal={setShowModal}
+            />
         </>
     );
 };
